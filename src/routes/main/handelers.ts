@@ -1,10 +1,12 @@
 import { Request, Response } from "express";
-import ClientsCollection from "../../Database/models/ClientModel";
-import DbQueries from "../../Database/DbQueries";
+import ClientsModel from "../../Database/clients/model";
+import {addClient, getReceiver, getClientBalance, updateTransHis, updateClientBalance} from "../../Database/clients/queries";
+
+
 // basic route hander
 export async function basicRouteHandler(req: Request, res: Response){
   // all client array
-  ClientsCollection.find({}, (err, data) => {
+  ClientsModel.find({}, (err, data) => {
     if(err) throw err;
     // send all the users to the client
     res.send(data)
@@ -14,16 +16,16 @@ export async function basicRouteHandler(req: Request, res: Response){
 
 // add new client handler
 export async function addNewClient(req: Request, res: Response){
-  const newClient = await new DbQueries(ClientsCollection).addClient(req.body);
+  const newClient = await addClient(req.body);
   console.log(newClient)
   res.send({msg: "client adding done"})
 }
 // get reciver
-export async function getReceiver(req: Request, res: Response){
+export async function getReceiverHandler(req: Request, res: Response){
    // get receiver phone from body
    const {receiverPhone} = req.body as {receiverPhone: string};
    // get the receiver from db by his phone
-   const receiver = await new DbQueries(ClientsCollection).getReceiver(receiverPhone);
+   const receiver = await getReceiver(receiverPhone);
    // response object
    const ResData = {error: false, data: {receiver}}
    // send the data to the client
@@ -34,7 +36,7 @@ export async function submitTransfer(req: Request, res: Response){
   // transfer details comes from client
   const data = req.body as {receiverPhone: string, amount: string};
   // get the current client balance
-  const currentClientBalance = await new DbQueries(ClientsCollection).getClientBalance({_id: req.currentClient});
+  const currentClientBalance = await getClientBalance({_id: req.currentClient});
   // if transfer amount less than current client balance
   if(currentClientBalance > Number(data.amount)) {
     // get the receiver 
@@ -44,13 +46,13 @@ export async function submitTransfer(req: Request, res: Response){
       // shrink transfer amount from currentClient balance config
       const updateCurrentClient = {amount: data.amount, selector: {_id: req.currentClient}, operation: false};
       // Response
-      await new DbQueries(ClientsCollection).updateClientBalance(updateReceiver);
+      await updateClientBalance(updateReceiver);
       // update currentClient balance
-      await new DbQueries(ClientsCollection).updateClientBalance(updateCurrentClient);
+      await updateClientBalance(updateCurrentClient);
       // update trhi
-      const NewTransaction = await new DbQueries(ClientsCollection).updateClientTransactionsHistory(req.currentClient, {receiverPhone: data.receiverPhone, amount: data.amount});
+      const NewTransaction = await updateTransHis(req.currentClient, {receiverPhone: data.receiverPhone, amount: data.amount});
       // new_Current_Client Balance
-      const newBalance = await new DbQueries(ClientsCollection).getClientBalance({_id: req.currentClient});
+      const newBalance = await getClientBalance({_id: req.currentClient});
       // send the response
       res.send({error: false, data: {newBalance, NewTransaction}})
     } catch(error){

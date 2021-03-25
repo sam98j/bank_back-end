@@ -1,17 +1,14 @@
 import { Request, Response } from "express";
-import ClientsCollection from "../../Database/models/ClientModel";
-import DbQueries from "../../Database/DbQueries";
 import JWT from "jsonwebtoken";
 import { AuthFaild, AuthSuccess, ClientCredentioal, LoginSuccess } from "../../Interfaces/auth.interface";
 import { Client } from "../../Interfaces/client.interface";
+import {findClient, findClientById} from "../../Database/clients/queries"
 
 export async function LoginHandler(req: Request, res: Response): Promise<void> {
   // client name && password
   const Credentioal: ClientCredentioal = req.body; 
   // get client from the data base
-  const data: Client | null = await new DbQueries(
-    ClientsCollection
-  ).findClient(Credentioal);
+  const data: Client | null = await findClient(Credentioal);
 
   // if client is exist
   if (data) {
@@ -39,7 +36,7 @@ export async function InitateClientHandler(req: Request, res: Response) {
   // get id of currentclient
   const _id: string = req.currentClient!;
   // get the client assosated with that id from database
-  const data: Client = await new DbQueries(ClientsCollection).findClientById(_id);
+  const data: Client = await findClientById(_id);
   // the data that will send to the client
   const ResData: AuthSuccess = {error: false, data: {currentClient: data}}
   // send data to the client
