@@ -42,11 +42,11 @@ export class Configs implements ServerConfigs{
     }
     // run all the configs
     configure(){
+        // middleware config
+        this.configMiddleWare()
         // database config
         this.configDatabase()
         // routes config
         this.configRoutes()
-        // middleware config
-        this.configMiddleWare()
     }
 }

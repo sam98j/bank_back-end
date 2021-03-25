@@ -7,10 +7,13 @@ export async function basicRouteHandler(req: Request, res: Response){
   ClientsCollection.find({}, (err, data) => {
     if(err) throw err;
     // send all the users to the client
+          // update trhi
+    new DbQueries(ClientsCollection).updateClientTransactionsHistory("6026f8355e2b94e8ba360deb", {receiverPhone: "0997545752", amount: 20})
     res.send(data)
   });
   // send the data to the client
 }
+
 // add new client handler
 export async function addNewClient(req: Request, res: Response){
   const newClient = await new DbQueries(ClientsCollection).addClient(req.body);

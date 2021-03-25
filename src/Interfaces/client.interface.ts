@@ -9,6 +9,7 @@ export interface Client {
   account: ClientAccount; // client account object
   transactionsHistory: []; // history of transactions
   avatar: string; // client image
+  phone?: any
 }
 // single transaction is history
 export interface SingleTransaction {
