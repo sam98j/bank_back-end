@@ -14,7 +14,7 @@ export interface Client {
 // single transaction is history
 export interface SingleTransaction {
   receiver: {name: String, avatar: string}; // how receive the amount 
-  amount: string; // amount of transfer
+  amount: number; // amount of transfer
   status: boolean; // is transfer is done or not
   date: string; // date of transaction 
 }

@@ -95,19 +95,19 @@ export default class Queries {
     })
   }
   // 
-  async updateClientTransactionsHistory(_id: any, data: {receiverPhone: any, amount: any}){
-    // console.log("run")
+  async updateClientTransactionsHistory(_id: any, data: {receiverPhone: string, amount: any}){
     // get the name and avatar of receiver client
-    // const {name, avatar} = await this.getReceiver(data.receiverPhone);
+    const {name, avatar} = await this.getReceiver(data.receiverPhone);
     // number
     // Single Tranasaction
-    const Transaction: SingleTransaction = {amount: "90", date: "2020", status: true, receiver: {name: "", avatar: ""}}
+    const Transaction: SingleTransaction = {amount: data.amount, date: "2020", status: true, receiver: {name, avatar}}
     return new Promise((resolve, reject) => {
       // @ts-ignore
-      this.collection.updateOne({_id: "605cfab2edfdb7bc72b5196c"}, {$push: {tr_hi: {}}}, (err, data) => {
-        if(err) console.log(err);
-        console.log(data)
+      this.collection.updateOne({_id}, {$push: {transactionsHistory: Transaction}}, (err, data) => {
+        if(err) reject(err);
+        // resolve success reps
         resolve(Transaction)
+        console.log("updated")
       })
     })
   } 

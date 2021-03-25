@@ -7,8 +7,6 @@ export async function basicRouteHandler(req: Request, res: Response){
   ClientsCollection.find({}, (err, data) => {
     if(err) throw err;
     // send all the users to the client
-          // update trhi
-    new DbQueries(ClientsCollection).updateClientTransactionsHistory("6026f8355e2b94e8ba360deb", {receiverPhone: "0997545752", amount: 20})
     res.send(data)
   });
   // send the data to the client
@@ -47,12 +45,14 @@ export async function submitTransfer(req: Request, res: Response){
       const updateCurrentClient = {amount: data.amount, selector: {_id: req.currentClient}, operation: false};
       // Response
       await new DbQueries(ClientsCollection).updateClientBalance(updateReceiver);
-      // 
+      // update currentClient balance
       await new DbQueries(ClientsCollection).updateClientBalance(updateCurrentClient);
+      // update trhi
+      const NewTransaction = await new DbQueries(ClientsCollection).updateClientTransactionsHistory(req.currentClient, {receiverPhone: data.receiverPhone, amount: data.amount});
       // new_Current_Client Balance
       const newBalance = await new DbQueries(ClientsCollection).getClientBalance({_id: req.currentClient});
       // send the response
-      res.send({error: false, data: {newBalance}})
+      res.send({error: false, data: {newBalance, NewTransaction}})
     } catch(error){
       // log the error
       console.log(error)
