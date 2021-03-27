@@ -1,5 +1,5 @@
-import { ClientCredentioal } from "../../Interfaces/auth.interface";
-import {Client, SingleTransaction} from "../../Interfaces/client.interface";
+import { ClientCredentioal } from "../../routes/auth/inteface";
+import {Client, SingleTransaction, updateClientBalanceParams} from "./interface";
 import ClientsModel from "./model"
 
   // find client by credentioal
@@ -73,19 +73,20 @@ export async function getClientBalance(selector: {phone?: string, _id?: string})
   })
 }
   // update current client balance after transfer done
-export async function updateClientBalance(data: {amount: string, selector: {phone?: string, _id?: string}, operation: boolean}){
+export async function updateClientBalance(data: updateClientBalanceParams){
   // the client balance "currentclient or ReceiverClient"
   const clientBalance = await getClientBalance(data.selector);
   // the new balance for currentClient or ReceiverClient 
   const updatedBalance = data.operation ? clientBalance + Number(data.amount) : clientBalance - Number(data.amount);
   // return Promise
-  return new Promise((resolve, reject) => {
+  return new Promise(async(resolve, reject) => {
     // update the datebase 
-    ClientsModel.updateOne(data.selector, {$set: {"account": {"balance": String(updatedBalance)}}}, {}, (err, res) => {
+    ClientsModel.updateOne(data.selector, {$set: {"account": {"balance": String(updatedBalance)}}}, {}, async(err, res) => {
       // promise rejection
       if(err) reject(err);
       // promise fulffil
-      resolve({error: false, data: "transfer is done"})
+      const newBalance = await getClientBalance(data.selector).catch(err => reject(err));
+      resolve(newBalance)
     })
   })
 }
@@ -106,3 +107,12 @@ export async function updateTransHis(_id: any, data: {receiverPhone: string, amo
     })
   })
 } 
+// submit transfer
+function submitTransfer(_id: string, receiverphone: string, amount: string){
+  // update current client balance
+  // update receiver client balance 
+  // get new balance of current client
+  // update current client trhi
+  updateClientBalance({amount, selector: {_id}, operation: false}) // take the money from current client
+
+}

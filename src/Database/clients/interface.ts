@@ -1,7 +1,7 @@
 export interface ClientAccount {
   balance: string;
 }
-  
+    
 export interface Client {
   _id?: String; // id of client
   name: String; // name of client
@@ -17,4 +17,10 @@ export interface SingleTransaction {
   amount: number; // amount of transfer
   status: boolean; // is transfer is done or not
   date: string; // date of transaction 
+}
+// update client balance paramters
+export interface updateClientBalanceParams {
+  amount: string, 
+  selector: {phone?: string, _id?: string}, 
+  operation: boolean
 }

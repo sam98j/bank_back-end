@@ -1,5 +1,5 @@
 import Express, {Application} from "express"
-import { ServerConfigs } from "../Interfaces/server.interface";
+import { ServerConfigs } from "./interface";
 import { Configs } from "./config";
 // Server class
 class Server {

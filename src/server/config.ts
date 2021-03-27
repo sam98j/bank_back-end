@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import AuthRoutes from "../routes/auth/index";
 import MainRoutes from "../routes/main/index";
 import cors from "cors";
-import {ServerConfigs} from "../Interfaces/server.interface"
+import {ServerConfigs} from "./interface"
 // config server routes
 export class Configs implements ServerConfigs{
     // express app object
