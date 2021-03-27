@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { Client } from "../../Database/clients/interface";
 import ClientsModel from "../../Database/clients/model";
-import {addClient, getReceiver, getClientBalance, updateTransHis, updateClientBalance} from "../../Database/clients/queries";
+import {getReceiver, getClientBalance, updateTransHis, updateClientBalance} from "../../Database/clients/queries";
 import { AllClientsRes, GetReceiverBody, GetReceiverRes, SubmitTransBody } from "./interfac";
 
 
@@ -39,7 +39,7 @@ export async function submitTransfer(req: Request, res: Response){
   // get the current client balance
   const currentClientBalance = await getClientBalance({_id: req.currentClient});
   // if transfer amount less than current client balance
-  if(currentClientBalance > Number(amount)) {
+  if(currentClientBalance! > Number(amount)) {
     // add transfer amount to receiver balance config
     const updateReceiver = {amount, selector: {phone: receiverPhone}, operation: true};
     // shrink transfer amount from currentClient balance config

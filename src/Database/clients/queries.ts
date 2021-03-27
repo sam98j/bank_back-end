@@ -3,15 +3,14 @@ import {Client, SingleTransaction, updateClientBalanceParams} from "./interface"
 import ClientsModel from "./model"
 
   // find client by credentioal
-export async function findClient(
-  Credentioal: ClientCredentioal
-): Promise<Client | null> {
-  return new Promise(
-    (resolve, reject) => {
-      ClientsModel.findOne(
-        Credentioal,
-        (err: any, client: Client | null): void => {
-          if (err) console.log(err);
+export async function findClient(Credentioal: ClientCredentioal): Promise<Client | null> {
+  // return new Promise
+  return new Promise((resolve, reject) => {
+      // find client in database
+      ClientsModel.findOne(Credentioal,(err: any, client: Client | null): void => {
+          // if an error accure reject the promise
+          if (err) reject(err);
+          // resolve the promise
           resolve(client);
         }
       );
@@ -19,78 +18,87 @@ export async function findClient(
   );
 }
   // find by id
-export async function findClientById(_id: string): Promise<Client>{
+export async function findClientById(_id: string): Promise<Client | null>{
   // retun promise
   return new Promise((resolve, reject) => {
     // get the client by id
-    ClientsModel.findById(_id, (err: any, data: Client) => {
+    ClientsModel.findById(_id, (err: any, data: Client | null) => {
       // if an error
-      if(err) console.log("error in get client by id")
+      if(err) reject(err)
       // resolve the data
       resolve(data)
     })
   })
 }
-  // add new client
-export async function addClient(data: ClientCredentioal){
+// get all client
+export async function getAllClient(): Promise<[Client] | []>{
+  // return new promise
   return new Promise((resolve, reject) => {
-    const clientData: Client = {...data, account: {balance: "0"}, transactionsHistory: [], avatar: ""}
-    ClientsModel.insertMany([clientData], {}, (err, clientData) => {
-      if(err) console.log(err)
-      resolve(clientData)
-    })
-  })
-}
-  // get all client
-export async function getAllClient(){
-  return new Promise((resolve, reject) => {
-    ClientsModel.find({}, (err, data) => {
-      if(err) throw err;
+    // connect to db to get all clients
+    ClientsModel.find({}, (err: any, data: [Client] | []) => {
+      // if an error accure during geting tha data
+      if(err) reject(err);
+      // resolve the promise
       resolve(data)
     })
   })
 }
-  // get receiver by phone number
-export async function getReceiver(receiverPhone: string): Promise<Client>{
+// get receiver by phone number
+export async function getReceiver(receiverPhone: string): Promise<Client | null>{
+  // return new promise
   return new Promise((resolve, reject) => {
-    ClientsModel.findOne({phone: receiverPhone}, (err: any, data: Client) => {
-      if(err) console.log(err);
+    ClientsModel.findOne({phone: receiverPhone}, (err: any, data: Client | null) => {
+      // if an error accure during getting the receiver reject the promise
+      if(err) reject(err);
+      // resolve the promise
       resolve(data)
     })
   })
 }
   // get client current balance
-export async function getClientBalance(selector: {phone?: string, _id?: string}): Promise<number>{
+export async function getClientBalance(selector: {phone?: string, _id?: string}): Promise<number | null>{
   // return promise 
   return new Promise((resolve, reject) => {
     // connect to databasse
-    ClientsModel.findOne(selector, {"account.balance": 1}, {},(err: any, data: {account: {balance: string}}) => {
+    ClientsModel.findOne(selector, {"account.balance": 1}, {},(err: any, data: {account: {balance: string}} | null) => {
       // promise rejectoin
       if(err) reject(err);
+      // check for null
+      const resoveData = data ? Number(data.account.balance) : null;
       // promise fuffil
-      resolve(Number(data.account.balance))
+      resolve(resoveData)
     })
   })
 }
-  // update current client balance after transfer done
-export async function updateClientBalance(data: updateClientBalanceParams){
-  // the client balance "currentclient or ReceiverClient"
-  const clientBalance = await getClientBalance(data.selector);
-  // the new balance for currentClient or ReceiverClient 
-  const updatedBalance = data.operation ? clientBalance + Number(data.amount) : clientBalance - Number(data.amount);
-  // return Promise
+// update current client balance after transfer done
+export function updateClientBalance(data: updateClientBalanceParams): Promise<number| null>{
+  // return new Promise
   return new Promise(async(resolve, reject) => {
-    // update the datebase 
-    ClientsModel.updateOne(data.selector, {$set: {"account": {"balance": String(updatedBalance)}}}, {}, async(err, res) => {
-      // promise rejection
-      if(err) reject(err);
-      // promise fulffil
-      const newBalance = await getClientBalance(data.selector).catch(err => reject(err));
-      resolve(newBalance)
+    // get the balance of current or receiver client 
+    await getClientBalance(data.selector)
+    .then(oldBalance => {
+      // check if balance is not null
+      if(oldBalance) {
+        // new balance of current or receiver client
+        const newBalance = data.operation ? oldBalance + data.amount : oldBalance - data.amount;
+        // update the database
+        ClientsModel.updateOne(data.selector, {$set: {"account.balance": newBalance}}, {}, async(err, res) => {
+          // if an error durring update the db
+          if(err) reject(err);
+          // get newBalance of current client or receiver client
+          await getClientBalance(data.selector)
+          .then(newBalance => {
+            // resolve newBalance
+            resolve(newBalance)
+          })
+          .catch(err => reject(err)) // if an error durring get newBalance of current or receiver client
+        })
+      } else reject("client dosenot exitst")
     })
+    .catch(err => reject(err)) // an error during getting balance of current or recevier client
   })
 }
-  // 
+// 
 export async function updateTransHis(_id: any, data: {receiverPhone: string, amount: any}){
   // get the name and avatar of receiver client
   const {name, avatar} = await getReceiver(data.receiverPhone);
@@ -108,11 +116,21 @@ export async function updateTransHis(_id: any, data: {receiverPhone: string, amo
   })
 } 
 // submit transfer
-function submitTransfer(_id: string, receiverphone: string, amount: string){
-  // update current client balance
-  // update receiver client balance 
-  // get new balance of current client
-  // update current client trhi
-  updateClientBalance({amount, selector: {_id}, operation: false}) // take the money from current client
-
+function submitTransfer(_id: string, receiverphone: string, amount: number){
+  return new Promise(async(resolve, reject) => {
+    // take the money from current client
+    await updateClientBalance({amount, selector: {_id}, operation: false}) // take the money from current client
+    .then(async newBalance => {
+      if(newBalance) {
+        await updateClientBalance({amount, selector: {phone: receiverphone}, operation: true}) // update balance of receiver
+        .then(newBalance => {
+          if(newBalance) {
+            
+          } else reject("cannot find receiver client")
+        })
+        .catch(() => reject("cannot update receiver client balance"))
+      } else reject("cannot find the current client")
+    })
+    .catch(() => reject("cannot take the money form current client")) // an error durring take money from current client
+  })
 }

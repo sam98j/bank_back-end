@@ -20,7 +20,7 @@ export interface SingleTransaction {
 }
 // update client balance paramters
 export interface updateClientBalanceParams {
-  amount: string, 
+  amount: number, 
   selector: {phone?: string, _id?: string}, 
   operation: boolean
 }

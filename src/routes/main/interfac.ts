@@ -18,7 +18,7 @@ export interface GetReceiverBody {
 // body of request to submit transfer money
 export interface SubmitTransBody {
     receiverPhone: string;
-    amount: string
+    amount: number
 }
 // response of request to submit transfer money
 export interface SubmitTransRes extends responseObj {
