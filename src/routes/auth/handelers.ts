@@ -1,18 +1,17 @@
 import { Request, Response } from "express";
 import JWT from "jsonwebtoken";
 import { AuthFaild, IntSuccess, ClientCredentioal, LoginSuccess } from "./inteface";
-import { Client } from "../../Database/clients/interface";
-import {findClient, findClientById} from "../../Database/clients/queries"
+import {findClient, findClientById, getReceiver} from "../../Database/clients/queries"
 // login route handler
 export async function LoginHandler(req: Request, res: Response): Promise<void> {
   // client name && password
   const Credentioal: ClientCredentioal = req.body; 
   // get client from the data base
-  const data: Client | null = await findClient(Credentioal);
+  const data = await findClient(Credentioal);
 
   // if client is exist
   if (data) {
-    const {_id, account, avatar, transactionsHistory, name} = data;
+    const {_id, account, avatar, transactionsHistory, name} = data[0] ;
     // client data that will be send
     const currentClient = { _id, name, account, transactionsHistory, avatar };
     // generate token to the client
@@ -36,9 +35,9 @@ export async function InitateClientHandler(req: Request, res: Response) {
   // get id of currentclient
   const _id: string = req.currentClient!;
   // get the client assosated with that id from database
-  const data: Client = await findClientById(_id);
+  const data = await findClientById(_id);
   // the data that will send to the client
-  const ResData: IntSuccess = {error: false, data: {currentClient: data}}
+  const ResData: IntSuccess = {error: false, data: {currentClient: data!}}
   // send data to the client
   res.send(ResData);
 }

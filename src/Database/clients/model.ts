@@ -1,4 +1,4 @@
-import mongoose, { Model } from "mongoose";
+import mongoose, { Model, Document } from "mongoose";
 
 const ClientSchema = new mongoose.Schema({
   name: String,

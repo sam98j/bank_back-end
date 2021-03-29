@@ -1,11 +1,9 @@
 import express from "express";
-import { addNewClient, basicRouteHandler, getReceiverHandler, submitTransfer } from "./handelers";
+import { basicRouteHandler, getReceiverHandler, submitTransfer } from "./handelers";
 import { validateClientMiddleware } from "../../utils/VierfyClient";
 const Router = express.Router()
 // home route 
-Router.get("/", basicRouteHandler)
-// add new client
-Router.post("/add_new_client", addNewClient)
+Router.get("/", validateClientMiddleware,basicRouteHandler)
 // get the client that want to send money to him
 Router.post("/transfer/get_receiver", getReceiverHandler)
 // submit money transfer
