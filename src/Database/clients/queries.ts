@@ -3,57 +3,19 @@ import {Client, SingleTransaction, updateClientBalanceParams} from "./interface"
 import ClientsModel from "./model"
 
   // find client by credentioal
-export async function findClient(Credentioal: ClientCredentioal): Promise<Client | null> {
-  // return new Promise
-  return new Promise((resolve, reject) => {
-      // find client in database
-      ClientsModel.findOne(Credentioal,(err: any, client: Client | null): void => {
-          // if an error accure reject the promise
-          if (err) reject(err);
-          // resolve the promise
-          resolve(client);
-        }
-      );
-    }
-  );
+export function findClient(credentioal: ClientCredentioal){
+  // return Promise
+  return ClientsModel.find(credentioal)
 }
   // find by id
-export async function findClientById(_id: string): Promise<Client | null>{
+export function findClientById(_id: string){
   // retun promise
-  return new Promise((resolve, reject) => {
-    // get the client by id
-    ClientsModel.findById(_id, (err: any, data: Client | null) => {
-      // if an error
-      if(err) reject(err)
-      // resolve the data
-      resolve(data)
-    })
-  })
-}
-// get all client
-export async function getAllClient(): Promise<[Client] | []>{
-  // return new promise
-  return new Promise((resolve, reject) => {
-    // connect to db to get all clients
-    ClientsModel.find({}, (err: any, data: [Client] | []) => {
-      // if an error accure during geting tha data
-      if(err) reject(err);
-      // resolve the promise
-      resolve(data)
-    })
-  })
+  return ClientsModel.findById(_id)
 }
 // get receiver by phone number
-export async function getReceiver(receiverPhone: string): Promise<Client | null>{
+export async function getReceiver(phone: string){
   // return new promise
-  return new Promise((resolve, reject) => {
-    ClientsModel.findOne({phone: receiverPhone}, (err: any, data: Client | null) => {
-      // if an error accure during getting the receiver reject the promise
-      if(err) reject(err);
-      // resolve the promise
-      resolve(data)
-    })
-  })
+  return ClientsModel.findOne({phone})
 }
   // get client current balance
 export async function getClientBalance(selector: {phone?: string, _id?: string}): Promise<number | null>{
