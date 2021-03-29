@@ -60,6 +60,18 @@ export function updateClientBalance(data: updateClientBalanceParams): Promise<nu
     .catch(err => reject(err)) // an error during getting balance of current or recevier client
   })
 }
+
+async function xx(data: updateClientBalanceParams){
+  try {
+    const oldBalance = await getClientBalance(data.selector)
+    if(oldBalance) {
+      // new balance of current or receiver client
+      const newBalance = data.operation ? oldBalance + data.amount : oldBalance - data.amount;
+      return ClientsModel.updateOne(data.selector, {$set: {"account.balance": newBalance}})
+    }
+  } catch(err){return err}
+}
+
 // 
 export async function updateTransHis(_id: any, data: {receiverPhone: string, amount: any}){
   // get the name and avatar of receiver client
