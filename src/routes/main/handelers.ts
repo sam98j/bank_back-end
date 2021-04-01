@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import MainController from "../../controllers/main";
 import ClientsModel from "../../Database/clients/model";
 import {getReceiver, getClientBalance, DoTransfer} from "../../Database/clients/queries";
 import { GetReceiverBody, GetReceiverRes, SubmitTransBody, SubmitTransRes } from "./interface";
@@ -7,12 +8,9 @@ import { GetReceiverBody, GetReceiverRes, SubmitTransBody, SubmitTransRes } from
 // basic route hander
 export async function basicRouteHandler(req: Request, res: Response){
   // all client array
-  try {
-    const data = await ClientsModel.find({});
-    const resObj = {error: false, data}
-    // send all the users to the client
-    res.send(resObj)
-  } catch(err) {res.send({error: true, data: "cannot find clients"})}
+  const controller = new MainController();
+  const response = await controller.mainRoute();
+  res.send(response)
 }
 // get reciver
 export async function getReceiverHandler(req: Request, res: Response){
