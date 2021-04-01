@@ -7,10 +7,10 @@ export interface ClientCredentioal {
     password: String;
 } 
 // when use authentecation is succeed
-export interface IntSuccess extends responseObj{
-    error: false;
+export interface IntRes extends responseObj{
+    error: boolean;
     data: {
-        currentClient: Client;
+        currentClient: Client | null;
     }
 } 
 // when use authentecation is faild
@@ -19,10 +19,10 @@ export interface AuthFaild extends responseObj{
     data: String;
 }
 // when use authentecation is succeed
-export interface LoginSuccess extends responseObj{
-    error: false;
+export interface LoginRes{
+    error: boolean;
     data: {
-        token: String,
-        currentClient: Client;
+        token: string | null,
+        currentClient: Client | null;
     }
 }

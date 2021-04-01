@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import JWT from "jsonwebtoken";
-import { AuthFaild, IntSuccess, ClientCredentioal, LoginSuccess } from "./inteface";
+import { AuthFaild, IntSuccess, ClientCredentioal, LoginRes } from "./inteface";
 import {findClient, findClientById, getReceiver} from "../../Database/clients/queries"
 // login route handler
 export async function LoginHandler(req: Request, res: Response): Promise<void> {
@@ -17,7 +17,7 @@ export async function LoginHandler(req: Request, res: Response): Promise<void> {
     // generate token to the client
     const token: string = JWT.sign({ _id }, "Token Secret");
     // data will send to the client
-    const ResData: LoginSuccess = { error: false, data: {token, currentClient} };
+    const ResData: LoginRes = { error: false, data: {token, currentClient} };
     // send data to the client
     res.send(ResData);
   } else {

@@ -6,19 +6,85 @@
 		"requestBodies": {},
 		"responses": {},
 		"schemas": {
-			"PingRes": {
+			"ClientAccount": {
 				"properties": {
-					"message": {
+					"balance": {
 						"type": "string"
 					}
 				},
 				"required": [
-					"message"
+					"balance"
 				],
 				"type": "object",
 				"additionalProperties": false
 			},
-			"AddClientBody": {
+			"Client": {
+				"properties": {
+					"_id": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"password": {
+						"type": "string"
+					},
+					"account": {
+						"$ref": "#/components/schemas/ClientAccount"
+					},
+					"transactionsHistory": {
+						"items": {},
+						"type": "array"
+					},
+					"avatar": {
+						"type": "string"
+					},
+					"phone": {}
+				},
+				"required": [
+					"name",
+					"account",
+					"transactionsHistory",
+					"avatar"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"LoginRes": {
+				"properties": {
+					"error": {
+						"type": "boolean"
+					},
+					"data": {
+						"properties": {
+							"currentClient": {
+								"allOf": [
+									{
+										"$ref": "#/components/schemas/Client"
+									}
+								],
+								"nullable": true
+							},
+							"token": {
+								"type": "string",
+								"nullable": true
+							}
+						},
+						"required": [
+							"currentClient",
+							"token"
+						],
+						"type": "object"
+					}
+				},
+				"required": [
+					"error",
+					"data"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ClientCredentioal": {
 				"properties": {
 					"name": {
 						"type": "string"
@@ -30,6 +96,35 @@
 				"required": [
 					"name",
 					"password"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"IntRes": {
+				"properties": {
+					"error": {
+						"type": "boolean"
+					},
+					"data": {
+						"properties": {
+							"currentClient": {
+								"allOf": [
+									{
+										"$ref": "#/components/schemas/Client"
+									}
+								],
+								"nullable": true
+							}
+						},
+						"required": [
+							"currentClient"
+						],
+						"type": "object"
+					}
+				},
+				"required": [
+					"error",
+					"data"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -47,35 +142,16 @@
 	},
 	"openapi": "3.0.0",
 	"paths": {
-		"/test/ping": {
-			"get": {
-				"operationId": "PingHandler",
-				"responses": {
-					"200": {
-						"description": "Ok",
-						"content": {
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/PingRes"
-								}
-							}
-						}
-					}
-				},
-				"security": [],
-				"parameters": []
-			}
-		},
-		"/test/add_client": {
+		"/auth/login": {
 			"post": {
-				"operationId": "AddClientHandler",
+				"operationId": "LoginHandler",
 				"responses": {
 					"200": {
 						"description": "Ok",
 						"content": {
 							"application/json": {
 								"schema": {
-									"$ref": "#/components/schemas/AddClientBody"
+									"$ref": "#/components/schemas/LoginRes"
 								}
 							}
 						}
@@ -88,11 +164,30 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/AddClientBody"
+								"$ref": "#/components/schemas/ClientCredentioal"
 							}
 						}
 					}
 				}
+			}
+		},
+		"/auth/initate_client": {
+			"get": {
+				"operationId": "IntClientHandler",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/IntRes"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
 			}
 		}
 	},
