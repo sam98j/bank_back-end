@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import MainController from "../../controllers/main";
 import ClientsModel from "../../Database/clients/model";
 import {getReceiver, getClientBalance, DoTransfer} from "../../Database/clients/queries";
 import { GetReceiverBody, GetReceiverRes, SubmitTransBody, SubmitTransRes } from "./interface";
@@ -8,9 +7,7 @@ import { GetReceiverBody, GetReceiverRes, SubmitTransBody, SubmitTransRes } from
 // basic route hander
 export async function basicRouteHandler(req: Request, res: Response){
   // all client array
-  const controller = new MainController();
-  const response = await controller.mainRoute();
-  res.send(response)
+  res.send({error: false, data: []})
 }
 // get reciver
 export async function getReceiverHandler(req: Request, res: Response){
