@@ -23,5 +23,5 @@ export interface SubmitTransBody {
 // response of request to submit transfer money
 export interface SubmitTransRes extends responseObj {
     error: boolean;
-    data: {newBalance: number, newTransaction: SingleTransaction}
+    data: {newBalance: number | null, newTransaction: SingleTransaction | null}
 }

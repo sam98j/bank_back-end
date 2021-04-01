@@ -18,6 +18,39 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"SingleTransaction": {
+				"properties": {
+					"receiver": {
+						"properties": {
+							"avatar": {
+								"type": "string"
+							},
+							"name": {
+								"type": "string"
+							}
+						},
+						"required": [
+							"avatar",
+							"name"
+						],
+						"type": "object"
+					},
+					"amount": {
+						"type": "number",
+						"format": "double"
+					},
+					"date": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"receiver",
+					"amount",
+					"date"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"Client": {
 				"properties": {
 					"_id": {
@@ -33,7 +66,9 @@
 						"$ref": "#/components/schemas/ClientAccount"
 					},
 					"transactionsHistory": {
-						"items": {},
+						"items": {
+							"$ref": "#/components/schemas/SingleTransaction"
+						},
 						"type": "array"
 					},
 					"avatar": {
@@ -128,6 +163,99 @@
 				],
 				"type": "object",
 				"additionalProperties": false
+			},
+			"GetReceiverRes": {
+				"properties": {
+					"error": {
+						"type": "boolean"
+					},
+					"data": {
+						"properties": {
+							"receiver": {
+								"allOf": [
+									{
+										"$ref": "#/components/schemas/Client"
+									}
+								],
+								"nullable": true
+							}
+						},
+						"required": [
+							"receiver"
+						],
+						"type": "object"
+					}
+				},
+				"required": [
+					"error",
+					"data"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"GetReceiverBody": {
+				"properties": {
+					"receiverPhone": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"receiverPhone"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"SubmitTransRes": {
+				"properties": {
+					"error": {
+						"type": "boolean"
+					},
+					"data": {
+						"properties": {
+							"newTransaction": {
+								"allOf": [
+									{
+										"$ref": "#/components/schemas/SingleTransaction"
+									}
+								],
+								"nullable": true
+							},
+							"newBalance": {
+								"type": "number",
+								"format": "double",
+								"nullable": true
+							}
+						},
+						"required": [
+							"newTransaction",
+							"newBalance"
+						],
+						"type": "object"
+					}
+				},
+				"required": [
+					"error",
+					"data"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"SubmitTransBody": {
+				"properties": {
+					"receiverPhone": {
+						"type": "string"
+					},
+					"amount": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"receiverPhone",
+					"amount"
+				],
+				"type": "object",
+				"additionalProperties": false
 			}
 		},
 		"securitySchemes": {}
@@ -188,6 +316,64 @@
 				},
 				"security": [],
 				"parameters": []
+			}
+		},
+		"/transfer/get_receiver": {
+			"post": {
+				"operationId": "GetReceiverHandler",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/GetReceiverRes"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/GetReceiverBody"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/transfer/submit_transfer": {
+			"post": {
+				"operationId": "SubmitTransfer",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/SubmitTransRes"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/SubmitTransBody"
+							}
+						}
+					}
+				}
 			}
 		}
 	},

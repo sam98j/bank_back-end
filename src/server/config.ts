@@ -1,7 +1,7 @@
 import Express, { Application } from "express";
 import mongoose from "mongoose";
 import AuthRoutes from "../routes/auth/index";
-import MainRoutes from "../routes/main/index";
+import MainRoutes from "../routes/transactions/index";
 import cors from "cors";
 import {ServerConfigs} from "./interface"
 import swaggerUi from 'swagger-ui-express';
@@ -32,7 +32,7 @@ export class Configs implements ServerConfigs{
         // auth routes
         this.app.use("/auth", AuthRoutes);
         // main routes
-        this.app.use("/", MainRoutes);
+        this.app.use("/transfer", MainRoutes);
     }
     // config middleware 
     private configMiddleWare(){

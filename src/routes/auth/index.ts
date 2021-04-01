@@ -1,6 +1,5 @@
 import express, {Request, Response} from "express";
 const Router = express.Router();
-import { InitateClientHandler, LoginHandler } from "./handelers";
 import { validateClientMiddleware } from "../../utils/VierfyClient";
 import AuthController from "./controller";
 // handle login route

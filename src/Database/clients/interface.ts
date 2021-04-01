@@ -7,7 +7,7 @@ export interface Client {
   name: string; // name of client
   password?: string; // password of client
   account: ClientAccount; // client account object
-  transactionsHistory: any[]; // history of transactions
+  transactionsHistory: SingleTransaction[]; // history of transactions
   avatar: string; // client image
   phone?: any
 }
