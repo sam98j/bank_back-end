@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
 import ClientsModel from "../../Database/clients/model";
-import {getReceiver, getClientBalance, DoTransfer} from "../../Database/clients/queries";
+import ClientService from "../../Database/clients/queries";
 import { GetReceiverBody, GetReceiverRes, SubmitTransBody, SubmitTransRes } from "./interface";
+const clientService = new ClientService(ClientsModel)
 
 
 // basic route hander
@@ -15,7 +16,7 @@ export async function getReceiverHandler(req: Request, res: Response){
    const {receiverPhone} = req.body as GetReceiverBody;
    try {
       // get the receiver from db by his phone
-      const receiver = await getReceiver(receiverPhone);
+      const receiver = await clientService.getReceiver(receiverPhone);
       // response object
       const resObj: GetReceiverRes = {error: false, data: {receiver}}
       // send the data to the client
@@ -30,12 +31,12 @@ export async function submitTransfer(req: Request, res: Response){
 //   // transfer details comes from client
   const {receiverPhone, amount} = req.body as SubmitTransBody;
 //   // get the current client balance
-  const currentClientBalance = await getClientBalance(req.currentClient!);
+  const currentClientBalance = await clientService.getClientBalance(req.currentClient!);
 //   // if transfer amount less than current client balance
   if(currentClientBalance! > Number(amount)) {
     try {
-      const receiver = await getReceiver(receiverPhone);
-      const TransferData = await DoTransfer(req.currentClient!, receiver?._id!, amount);
+      const receiver = await clientService.getReceiver(receiverPhone);
+      const TransferData = await clientService.DoTransfer(req.currentClient!, receiver?._id!, amount);
       // res data
       const resData: SubmitTransRes = {error: false, data: {newTransaction: TransferData[0], newBalance: TransferData[1]}}
       res.send(resData)

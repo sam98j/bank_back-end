@@ -18,7 +18,7 @@ export class Configs implements ServerConfigs{
     // config database
     private configDatabase(){
         // remote database
-        const uri = `mongodb+srv://hosam98j:hosam98j@cluster0.vvtul.mongodb.net/Bank?retryWrites=true&w=majority`;
+        const uri = `mongodb+srv://sam98j:sam98j@cluster0.ho4jm.mongodb.net/Bank?retryWrites=true&w=majority`;
         // create connection
         mongoose.connect(uri, {
           useNewUrlParser: true,

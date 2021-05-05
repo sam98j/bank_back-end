@@ -1,13 +1,15 @@
 import { Request, Response } from "express";
 import JWT from "jsonwebtoken";
 import { AuthFaild, IntSuccess, ClientCredentioal, LoginSuccess } from "./inteface";
-import {findClient, findClientById, getReceiver} from "../../Database/clients/queries"
+import ClientsModel from '../../Database/clients/model'
+import ClientsService from "../../Database/clients/queries"
+const clientService = new ClientsService(ClientsModel)
 // login route handler
 export async function LoginHandler(req: Request, res: Response): Promise<void> {
   // client name && password
   const Credentioal: ClientCredentioal = req.body; 
   // get client from the data base
-  const data = await findClient(Credentioal);
+  const data = await clientService.findClient(Credentioal);
 
   // if client is exist
   if (data) {
@@ -35,7 +37,7 @@ export async function InitateClientHandler(req: Request, res: Response) {
   // get id of currentclient
   const _id: string = req.currentClient!;
   // get the client assosated with that id from database
-  const data = await findClientById(_id);
+  const data = await clientService.findClientById(_id);
   // the data that will send to the client
   const ResData: IntSuccess = {error: false, data: {currentClient: data!}}
   // send data to the client
