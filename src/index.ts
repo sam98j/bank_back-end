@@ -1,5 +1,0 @@
-import Server from "./server/server";
-// instance form server class
-const MainServer = new Server(2000);
-// run the main server
-MainServer.run()
