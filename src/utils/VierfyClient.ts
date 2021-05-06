@@ -1,6 +1,6 @@
 import JWT from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
-import { AuthFaild } from "../routes/auth/inteface";
+import { AuthFaild } from "../interfaces/auth.service";
 
 export function validateToken(req: Request): Promise<any> {
   // get the authorization Property from headers of request

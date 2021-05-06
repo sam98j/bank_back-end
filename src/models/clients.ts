@@ -1,5 +1,5 @@
 import mongoose, { Model, Document } from "mongoose";
-
+// create clientSchema
 const ClientSchema = new mongoose.Schema({
   name: String,
   password: String,

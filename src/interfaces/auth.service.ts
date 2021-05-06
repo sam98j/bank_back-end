@@ -1,5 +1,5 @@
-import { Client } from "../../Database/clients/interface";
-import { responseObj } from "../global.interface";
+import { Client } from "./clients.services";
+import { responseObj } from "./global";
 
 // the client login credentioal
 export interface ClientCredentioal {

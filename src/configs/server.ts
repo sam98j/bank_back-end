@@ -1,13 +1,13 @@
 import Express, { Application } from "express";
 import mongoose from "mongoose";
-import AuthRoutes from "../routes/auth/index";
-import MainRoutes from "../routes/main/index";
+import AuthRoutes from "../routes/auth";
+import MainRoutes from "../routes/transactions";
 import cors from "cors";
-import {ServerConfigs} from "./interface"
+import {Configs} from "../interfaces/server.config"
 import swaggerUi from 'swagger-ui-express';
 import forTest from "../routes/test/index"
 // config server routes
-export class Configs implements ServerConfigs{
+export class ServerConfigs implements Configs{
     // express app object
     private app: Application;
     // constructor function

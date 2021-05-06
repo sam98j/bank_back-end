@@ -1,7 +1,7 @@
 export interface ClientAccount {
-  balance: string;
+    balance: string;
 }
-    
+      
 export interface Client {
   _id?: string; // id of client
   name: string; // name of client

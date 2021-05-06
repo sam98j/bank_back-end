@@ -1,6 +1,6 @@
 import Express, {Application} from "express"
-import { ServerConfigs } from "./interface";
-import { Configs } from "./config";
+import { Configs } from "./interfaces/server.config";
+import { ServerConfigs } from "./configs/server";
 // Server class
 class Server {
     // Express app object
@@ -8,7 +8,7 @@ class Server {
     // the express app port
     private port: number | string = 1000;
     // server configurations
-    private configs: ServerConfigs = new Configs(this.app);
+    private configs: Configs = new ServerConfigs(this.app);
     // constructor function
     constructor(port: number) {
         // reset the app port
