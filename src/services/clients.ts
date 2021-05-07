@@ -69,20 +69,4 @@ export default class ClientsService {
       } catch(err) {reject("error durring get receiver")}
     })
   }
-  // submit transfer
-  async DoTransfer(_id: string, receiverId: string, amount: number): Promise<any[]>{
-    return new Promise(async(resolve, reject) => {
-      // take the money from current client
-      try {
-        // takeing Money
-        await this.updateClientBalance({_id, operation: false, amount})
-        // try to add moeny to receiver client
-        try {
-          await this.updateClientBalance({_id: receiverId, amount, operation: true})
-          const data = await Promise.all([this.updateTransHis(_id, {amount, receiverId}), this.getClientBalance(_id)])
-          resolve(data)
-        } catch(err) {reject("error in adding money to receiver client")}
-      } catch(err) {reject("an error in takeing")}
-    })
-  }
 }
