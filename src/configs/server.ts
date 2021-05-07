@@ -5,7 +5,6 @@ import MainRoutes from "../routes/transactions";
 import cors from "cors";
 import {Configs} from "../interfaces/server.config"
 import swaggerUi from 'swagger-ui-express';
-import forTest from "../routes/test/index"
 // config server routes
 export class ServerConfigs implements Configs{
     // express app object
@@ -34,8 +33,6 @@ export class ServerConfigs implements Configs{
         this.app.use("/auth", AuthRoutes);
         // main routes
         this.app.use("/", MainRoutes);
-        // for test routes
-        this.app.use("/test", forTest)
     }
     // config middleware 
     private configMiddleWare(){
