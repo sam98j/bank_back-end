@@ -32,7 +32,7 @@ export default class ClientsService {
     })
   }
   // update current client balance after transfer done
-  async updateClientBalance(data: updateClientBalanceParams){
+  async updateClientBalance(data: updateClientBalanceParams): Promise<number>{
     return new Promise(async(resolve, reject) => {
       // try to get the old balance of client
       try {
